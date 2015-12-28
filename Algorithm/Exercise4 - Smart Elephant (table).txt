@@ -1,0 +1,126 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define MAX_WEIGHT 10000
+#define MAX_ELEPHANT 1000
+
+typedef struct { //Structure is store the information of Elephant
+	int weight, IQ, number;
+}Elephant; 
+
+Elephant ele[MAX_ELEPHANT]; //ele is main information and ele_find is order of Weight Increase, IQ decrease
+
+void main(){
+	int cnt,i,j,k=0, min_w, min_i, min_n, num_e; //cnt is number of elephant, i-j loop value, k is using number of elephant find, min_w-n-e-i is using find minimum value
+	int temp_w, temp_i, temp_n, temp_IQ; //temporary value
+	 
+	int table[MAX_ELEPHANT][MAX_ELEPHANT];
+	int order[MAX_ELEPHANT][MAX_ELEPHANT];
+	int position,compare_IQ,ord;
+
+	int trace;
+	int length[MAX_ELEPHANT];
+	
+	printf("Enter the number of elepbant : ");
+	scanf("%d",&cnt); //Receive number of elephant
+
+	if(cnt < 2 || cnt > MAX_ELEPHANT){ //Exception
+		printf("WRONG INPUT! -Number-\n\n");
+		exit(0);
+	}
+
+	for(i=0; i<cnt; i++){
+		printf("Input weight of %dst elephant : ",i+1);
+		scanf("%d",&ele[i].weight);
+
+		if(ele[i].weight < 2 || ele[i].weight > MAX_WEIGHT){ //Exception
+			printf("WRONG INPUT! -Weight-\n\n");
+			exit(0);
+		}
+		
+		printf("Input IQ of %dst elephant : ",i+1);
+		scanf("%d",&ele[i].IQ);
+
+		if(ele[i].IQ < 1 || ele[i].IQ > 10000){ //Exception
+			printf("WRONG INPUT! -IQ-\n\n");
+			exit(0);
+		}
+
+		ele[i].number = i+1;
+	}
+	//-- array is ordered small weight
+	for(i=0; i<cnt; i++){   //Use the selection sort 
+		min_w = ele[i].weight;
+		min_i = ele[i].IQ;
+		min_n = ele[i].number;
+		k=i;
+		for(j=i; j<cnt; j++){
+			if(min_w > ele[j].weight){ //find the minmum of weight and insert to array order
+				min_w = ele[j].weight;
+				min_i = ele[j].IQ;
+				min_n = ele[j].number;	
+				
+				k = j;
+			}
+			else
+				continue;
+		
+		}
+		if(k==i)
+			continue;
+		else{
+		temp_w = ele[i].weight;
+		temp_i = ele[i].IQ;
+		temp_n = ele[i].number;
+
+		ele[i].weight = min_w;
+		ele[i].IQ = min_i;
+		ele[i].number = min_n;
+	
+		ele[k].IQ = temp_i;
+		ele[k].number = temp_n;
+		ele[k].weight = temp_w;
+		}
+	}
+	for(i=0; i<cnt; i++){
+		printf("%d \n",ele[i].weight);
+	}
+	//--------------------------------------------------------------------------------------
+
+	for(i=0; i<cnt; i++){
+		compare_IQ = ele[i].IQ;
+		ord=0;
+		order[i][ord] = ele[i].number;
+
+		for(j=i; j<cnt; j++){
+			
+			if(i>j)
+				continue;
+			else if(i==j){
+				table[i][j] = 1;
+				position = 1;
+				continue;
+			}
+			else{
+				if(compare_IQ > ele[j].IQ){
+					position++;
+					table[i][j] = position;
+					compare_IQ = ele[j].IQ;
+
+					ord++;
+					order[i][ord] = ele[j].number;
+				}
+				else
+					table[i][j] = position;
+				
+			}
+		}
+	}
+
+	for(i=0; i<cnt; i++){
+		for(j=i; j<cnt; j++){
+			printf("%d ,order[i][j]"); 
+		}
+		printf("\n");
+	}
+}

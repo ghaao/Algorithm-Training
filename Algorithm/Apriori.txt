@@ -1,0 +1,357 @@
+#include <stdio.h>
+#define minimun 2
+struct ITEM
+{
+   int tid;
+   int iarray[10];
+   int length;
+}item[100];
+void main()
+{
+   int i,j,k,l,m,num,count=0,count1,count2,count3,arr[2][100]={0,0,},temp;
+   int tempa,tempb,tempc;
+   float max=0,t;
+   int a,b,c,check=0;
+   float association(int,int,int,int);
+   float association2(int,int,int,int);
+   printf("Enter the number of TID:");
+   scanf("%d",&num);
+   for(i=0; i<num; i++)
+   {
+      printf("Enter the TID and item number:");
+      scanf("%d %d",&item[i].tid,&item[i].length);
+      for(j=0; j<item[i].length; j++)
+      {
+         scanf("%d",&item[i].iarray[j]);
+      }
+   }
+
+   for(i=0; i<num; i++)
+   {
+      for(j=0; j<item[i].length; j++)
+      {
+         arr[1][item[i].iarray[j]-1]++;   
+      }
+   }
+
+   for(i=0; i<num*2; i++)
+   {
+      if(arr[1][i]!=0)
+         count++;
+   }
+         
+   printf("\n");
+   printf("<C1>\n");
+   for(i=0; i<count; i++)
+   {
+      arr[0][i] = i+1;
+      printf("{%d} %d\n",arr[0][i],arr[1][i]);
+   }
+
+   for(i=0; i<count; i++)
+   {
+      if(arr[1][i]<minimun)
+      {
+         for(j=i; j<count; j++)
+         {
+            arr[0][j] = arr[0][j+1];
+            arr[1][j] = arr[1][j+1];
+         }
+         count--;
+      }
+   }
+   count1 = count;
+
+   printf("<L1>\n");
+   for(i=0; i<count; i++)
+   {
+      printf("{%d} %d\n",arr[0][i],arr[1][i]);
+   }
+
+   temp = count;
+   for(i=0; i<count; i++)
+   {
+      for(j=i+1; j<count; j++)
+      {
+         arr[0][temp]=arr[0][i]*10 + arr[0][j];
+         temp++;
+      }
+   }
+
+   
+   for(i=count1; i<temp; i++)
+   {
+      tempa = arr[0][i]/10;
+      tempb = arr[0][i]%10;
+      for(j=0; j<num; j++)
+      {
+         for(k=0; k<item[j].iarray[k]; k++)
+         {
+            if(tempa == item[j].iarray[k])
+            {
+               for(l=0; l<item[j].iarray[l]; l++)
+               {
+                  if(l!=k && tempb == item[j].iarray[l])
+                  {
+                     arr[1][i]++;
+                  }
+               }
+            }
+         }
+      }
+   }
+   
+   printf("\n");
+   printf("<C2>\n");
+   for(i=count1; i<temp; i++)
+   {
+      printf("{%d} %d\n",arr[0][i],arr[1][i]);
+   }
+
+
+   for(i=count1; i<temp; i++)
+   {
+      if(arr[1][i]<minimun)
+      {
+         for(j=i; j<temp; j++)
+         {
+            arr[0][j] = arr[0][j+1];
+            arr[1][j] = arr[1][j+1];
+         }
+         temp--;
+      }
+   }
+   count2 = temp;
+   printf("<L2>\n");
+   for(i=count1; i<count2; i++)
+   {
+      printf("{%d} %d\n",arr[0][i],arr[1][i]);
+   }
+
+   for(i=count1; i<count1+2; i++)
+   {
+      for(j=count1+2; j<count2; j++)
+      {
+         arr[0][temp] = arr[0][i]*10 + arr[0][j]%10;
+      }
+      temp++;
+   }
+
+   for(i=count2; i<temp; i++)
+   {
+      tempa = arr[0][i]/100;
+      tempb = arr[0][i]/10%10;
+      tempc = arr[0][i]%100%10;
+      for(j=0; j<num; j++)
+      {
+         for(k=0; k<item[j].iarray[k]; k++)
+         {
+            if(tempa == item[j].iarray[k])
+            {
+               for(l=0; l<item[j].iarray[l]; l++)
+               {
+                  if(tempb == item[j].iarray[l])
+                  {
+                     for(m=0; m<item[j].iarray[m]; m++)
+                     {
+                        if(l!=k && l!=m && m!=k && tempc == item[j].iarray[m])
+                        {
+                           arr[1][i]++;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   printf("\n");
+   printf("<C3>\n");
+   for(i=count2; i<temp; i++)
+   {
+      printf("{%d} %d\n",arr[0][i],arr[1][i]);
+   }
+
+   for(i=count2; i<temp; i++)
+   {
+      if(arr[1][i]<minimun)
+      {
+         for(j=i; j<temp; j++)
+         {
+            arr[0][j] = arr[0][j+1];
+            arr[1][j] = arr[1][j+1];
+         }
+         temp--;
+      }
+   }
+   count3 = temp;
+   printf("<L3>\n");
+   for(i=count2; i<count3; i++)
+   {
+      printf("{%d} %d\n",arr[0][i],arr[1][i]);
+   }
+
+   tempa = arr[0][count2]/100;
+   tempb = arr[0][count2]/10%10;
+   tempc = arr[0][count2]%100%10;
+
+   
+   t=association(tempa,tempb,tempc,num);
+   if(t>max)
+   {
+      max = t;
+      a = tempa;
+      b = tempb;
+      c = tempc;
+      check = 1;
+      
+   }
+
+   t=association(tempb,tempa,tempc,num);
+   if(t>max)
+   {
+      max = t;
+      a = tempa;
+      b = tempb;
+      c = tempc;
+      check = 1;
+      
+   }
+
+   t=association(tempc,tempa,tempb,num);
+   if(t>max)
+   {
+      max = t;
+      a = tempa;
+      b = tempb;
+      c = tempc;
+      check = 1;
+   }
+
+   t=association2(tempa,tempb,tempc,num);
+   if(t>max)
+   {
+      max = t;
+      a = tempa;
+      b = tempb;
+      c = tempc;
+      check = 2;
+      
+   }
+
+   t=association2(tempa,tempc,tempb,num);
+   if(t>max)
+   {
+      max = t;
+      a = tempa;
+      b = tempb;
+      c = tempc;
+      check = 2;
+   }
+
+   t=association2(tempb,tempc,tempa,num);
+   if(t>max)
+   {
+      max = t;
+      a = tempa;
+      b = tempb;
+      c = tempc;
+      check = 2;
+      
+   }
+
+   if(check==1)
+   {
+      printf("strong association rule = {%d} -> {%d %d}",a,b,c);
+   }
+   else if(check==2)
+   {
+      printf("strong association rule (%f) = {%d %d} -> {%d}",max,a,b,c);
+   }
+
+}
+
+float association(int a,int b,int c,int num)
+{
+   int i,j,k,l;
+   float domi=0,nume=0;
+   for(i=0; i<num; i++)
+   {
+      for(j=0; j<item[i].iarray[j]; j++)
+      {
+         if(item[i].iarray[j]==a)
+         {
+            for(k=0; k<item[i].iarray[k]; k++)
+            {
+               if(j!=k && item[i].iarray[k]==b)
+               {
+                  for(l=0; l<item[i].iarray[l]; l++)
+                  {
+                     if(j!=l && k!=l && item[i].iarray[l]==c)
+                        nume++;
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   
+   for(i=0; i<num; i++)
+   {
+      for(j=0; j<item[i].iarray[j]; j++)
+      {
+         if(item[i].iarray[j]==a)
+            domi++;
+      }
+   }
+   
+
+   return nume/domi;
+}
+
+float association2(int a,int b,int c,int num)
+{
+   int i,j,k,l;
+   float domi=0,nume=0;
+   for(i=0; i<num; i++)
+   {
+      for(j=0; j<item[i].iarray[j]; j++)
+      {
+         if(item[i].iarray[j]==a)
+         {
+            for(k=0; k<item[i].iarray[k]; k++)
+            {
+               if(j!=k && item[i].iarray[k]==b)
+               {
+                  for(l=0; l<item[i].iarray[l]; l++)
+                  {
+                     if(j!=l && k!=l && item[i].iarray[l]==c)
+                        nume++;
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   
+   for(i=0; i<num; i++)
+   {
+      for(j=0; j<item[i].iarray[j]; j++)
+      {
+         if(item[i].iarray[j]==a)
+         {
+            for(k=0; k<item[i].iarray[k]; k++)
+            {
+               if(j!=k && item[i].iarray[k]==b)
+                  domi++;
+            }
+         }
+      }
+   }
+   
+
+   return nume/domi;
+}

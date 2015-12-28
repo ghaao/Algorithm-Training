@@ -1,0 +1,74 @@
+#include <stdio.h>
+void main () 
+{
+   int push (int stack[],int top,int newnum); //Declare function
+   int pop(int stack[],int top);
+   int full(int top);
+   int empty(int top);
+   
+   int number, top = 0; //initialize top value 
+   int stack[100] = {0, };
+
+   printf("The program converts a Decimal Number to a Binary Number\n");
+   printf("Enter the number:");
+   scanf("%d",&number);
+
+   while(number>0)
+   {
+   top = push(stack, top, number%2); //The Number divide 2 and remainder stack using push function ex)input = 15 -> output = 1
+   number = number/2;
+   }
+   
+   printf("Binary Number is ");
+   while(top != 0)
+   {
+      top = pop(stack,top);   
+      printf("%d",stack[top]);  //Print remainder using pop function
+   }
+   printf("\n");
+
+}
+
+// Part of 'push' function. Push function stack remainder
+int push(int stack[], int top, int num) 
+{ 
+   if(full(top) == 1) // IF stack is full, return current top value
+   { 
+      printf("The stack is full!\n");
+      return top;
+   }
+   stack[top] = num;
+   top = top + 1;   //If reaminder stack, top+1
+   return top;
+}
+
+// Part of 'pop' function. Pop function take out remainder
+int pop(int stack[], int top) 
+{
+   if(empty(top) == 1) // IF stack is empty, return current top value
+   {
+      printf("The stack is empty"); 
+      return top;
+   }
+   stack[top] = 0;
+   top = top - 1;   //If reaminder take out, top-1
+   return top;
+}
+
+// Part of 'full' function. Check whether stack is full
+int full(int top)
+{
+   if(top == 100)
+      return 1;
+   else
+      return 0;
+}
+
+// Part of 'empty' function. Check whether stack is empty
+int empty(int top)
+{
+   if(top == 0)
+      return 1;
+   else
+      return 0;
+}

@@ -1,0 +1,108 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+typedef struct dot{
+	float x;
+	float y;
+	int check;
+}Dot;
+
+
+//initialize x,y value;
+
+void setPosition(Dot * arr, int length)
+{
+	int i;
+
+	for (i = 0; i < length; i++)
+	{
+		printf("Enter the %d dot x and y : ", i + 1);
+		scanf("%f %f", &arr[i].x, &arr[i].y);
+		arr[i].check = 0; // conection check value, if check node, check value is 1
+	}
+}
+
+void drawUsingPrims(Dot * arr, int length)
+{
+	int i, j;
+	float minCost;
+	float sumCost = 0;
+	float minCostTemp = 0;
+	int count = 0;
+	int endPoint;
+
+	arr[0].check = 1; //start point is arr[0]
+
+		for (i = 0; i < length ; i++)
+		{
+			if (arr[i].check == 1) // start
+			{
+				if (i == 0)
+				{
+					//first, set Min cost value
+					for (j = 0; j < length; j++)
+					{
+						if (arr[j].check == 1)
+							continue;
+						else
+						{
+							minCost = sqrt(((arr[j].x - arr[i].x) * (arr[j].x - arr[i].x)) + ((arr[j].y - arr[i].y) * (arr[j].y - arr[i].y)));
+							endPoint = j;
+							break;
+						}
+					}
+				}
+
+				for (j = 0; j < length; j++)
+				{
+					if (arr[j].check == 1) //If node is checked, pass
+						continue;
+
+					//else compare path cost with minCost
+					if (minCost > sqrt(((arr[j].x - arr[i].x) * (arr[j].x - arr[i].x)) + ((arr[j].y - arr[i].y) * (arr[j].y - arr[i].y))))
+					{
+						minCost = sqrt(((arr[j].x - arr[i].x) * (arr[j].x - arr[i].x)) + ((arr[j].y - arr[i].y) * (arr[j].y - arr[i].y)));
+						endPoint = j;
+					}
+				}
+			}
+
+			if (count == length - 1) // if link count is Node - 1, break
+				break;
+
+			if (i == length - 1)// To check all adjacent node, return start point
+			{
+				i = -1;
+				count++;// because one link is creaded, count++
+
+				arr[endPoint].check = 1; // checked node's check value is 1
+				sumCost += minCost;
+			}
+			
+	}
+
+	printf("min cost : %.2f", sumCost);
+}
+
+int main(void)
+{
+	Dot *p;
+	int num;
+
+	while (1)
+	{
+		printf("Enter the number of dot : ");
+		scanf("%d", &num);
+
+		if (num < 30 && num > 0)
+			break;
+	}
+
+	p = (Dot *)malloc(num * sizeof(Dot));
+
+	setPosition(p, num);
+
+	drawUsingPrims(p, num);
+
+}

@@ -1,0 +1,67 @@
+#include <stdio.h>
+int w[30][30];
+int vcolor[100];
+int check=0;
+int m=2;
+void m_coloring(int,int);
+int promising(int);
+void main()
+{
+   int num,i,v;
+   int temp1,temp2,c;
+   int arr[100];;
+   printf("Enter the edge number:");
+   scanf("%d",&num);
+   if(num > 30 || num < 0)
+   {
+      printf("Edge number only exists 1~30, again Enter the edge number:");
+      scanf("%d",&num);
+   }
+   printf("Enter the vertex number:");
+   scanf("%d",&v);
+
+   for(i=0; i<num; i++)
+   {
+      scanf("%d %d",&temp1,&temp2);
+      w[temp1][temp2]=1;
+      w[temp2][temp1]=1;
+   }
+   
+   m_coloring(v,-1);
+
+   if(check==0)
+      printf("not two-color graph\n");
+   else if(check==1)
+      printf("two-color graph\n");
+}
+
+void m_coloring(int v,int i)
+{
+   int color;
+   if(promising(i))
+   {
+      if(i==v)
+         check = 1;
+      else
+      {
+         for(color=0; color<m; color++)
+         {
+            vcolor[i+1] = color;
+            m_coloring(v,i+1);
+         }
+      }
+   }
+}
+
+int promising(int i)
+{
+   int j = 0;
+   int swit = 1;
+   while(j<i && swit)
+   {
+      if(w[i][j] && vcolor[i] == vcolor[j])
+         swit = 0;
+      j++;
+   }
+   return swit;
+}
