@@ -1,0 +1,21 @@
+#pragma config(Sensor, S1,     light1,              sensorLightActive)
+
+#define LIGHT1_BLACK_THRESHOLD 60
+task main()
+{
+  int count;
+  count=0;
+motor[ motorB ] = 50;
+motor[ motorC ] = 50;
+while(count<4){
+   while ( SensorValue( light1 ) >= LIGHT1_BLACK_THRESHOLD ); // enter the black line
+   count++;
+   PlaySound( soundBeepBeep );
+   while ( SensorValue( light1 ) <= LIGHT1_BLACK_THRESHOLD ); // enter the black line
+   nxtDisplayTextLine( 0, "%d", count );        
+}
+
+motor[ motorB ] = 0;
+motor[ motorC ] = 0;
+wait1Msec( 1000 );
+}

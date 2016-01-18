@@ -1,0 +1,62 @@
+int a;
+task forward()
+{
+nMotorEncoder[ motorC ] = 0;
+motor[ motorB ] = 20;
+motor[ motorC ] = 20;
+while(nMotorEncoder[ motorC ]< a);
+
+}
+task backward()
+{
+nMotorEncoder[ motorC ] = 0;
+motor[ motorB ] = -20;
+motor[ motorC ] = -20;
+while(nMotorEncoder[ motorC ]> -a);
+
+}
+task right()
+{
+nMotorEncoder[ motorC ] = 0;
+motor[ motorB ] = -20;
+motor[ motorC ] = 20;
+while(nMotorEncoder[ motorC ] <a);
+
+}
+task left()
+{
+nMotorEncoder[ motorB ] = 0;
+motor[ motorB ] = 20;
+motor[ motorC ] = -20;
+while(nMotorEncoder[ motorB ] <a);
+
+}
+
+task main()
+{
+  while (true)
+{
+while (!bQueuedMsgAvailable());
+ClearMessage();
+a=messageParm[1];
+nxtDisplayTextLine( 1, "Receive: %d %d", messageParm[0],a);
+
+if(messageParm[0]==0)
+{
+ StartTask(forward);
+}
+else if(messageParm[0]==1)
+{
+  StartTask(backward);
+}
+else if(messageParm[0]==2)
+{
+  StartTask(right);
+}
+else {
+  StartTask(left);
+}
+
+}
+
+}
