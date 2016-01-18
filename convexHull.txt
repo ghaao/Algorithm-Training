@@ -1,0 +1,173 @@
+#include <stdio.h>
+#include <math.h>
+struct POINT
+{
+   int x,y;
+   int next,check;
+   float angle;
+}p[100];
+
+struct CPOINT
+{
+   int x,y;
+}cp[100];
+int calculate(int,int);
+void main()
+{
+   int num,i,j;
+   int temp1=0,temp2=0,count=0;
+   float space,bspace;
+   void bubblesort(int);
+   void convexhull(int);
+   printf("Enter the point number:");
+   scanf("%d",&num);
+   for(i=0; i<num; i++)
+   {
+      scanf("%d %d",&p[i].x,&p[i].y);
+   }
+
+   bubblesort(num);
+   for(i=0; i<num-1; i++)
+   {
+      temp1 = temp1 + (p[i].x * p[i+1].y);
+   }
+   temp1 = temp1 + (p[num-1].x * p[0].y);
+
+   for(i=0; i<num-1; i++)
+   {
+      temp2 = temp2 + (p[i].y * p[i+1].x);
+   }
+   temp2 = temp2 + (p[num-1].x * p[0].x);
+
+   space = ((float)temp1 - (float)temp2) / 2;
+
+   printf("space = %f\n",space);
+
+   convexhull(num);
+
+   for(i=0; i<num; i++)
+   {
+      for(j=0; j<num; j++)
+      {
+         if(p[i].next == j)
+         {
+            p[j].check = 1;
+         }
+      }
+   }
+
+   count = 0;
+   for(i=0; i<num; i++)
+   {
+      if(p[i].check==1)
+      {
+         cp[count].x = p[i].x;
+         cp[count].y = p[i].y;
+         count++;
+      }
+   }
+
+   temp1 = 0;
+   for(i=0; i<count-1; i++)
+   {
+      temp1 = temp1 + (cp[i].x * cp[i+1].y);
+   }
+   temp1 = temp1 + (cp[count-1].x * cp[0].y);
+
+   temp2 = 0;
+   for(i=0; i<count-1; i++)
+   {
+      temp2 = temp2 + (cp[i].y * cp[i+1].x);
+   }
+   temp2 = temp2 + (cp[count-1].y * cp[0].x);
+
+   bspace = (temp1-temp2)/2;
+
+   printf("box space = %f\n",bspace);
+
+   printf("wasted space = %f\n",((bspace - space)/bspace) * 100);
+
+   
+}
+
+void bubblesort(int num)
+{
+   int i,j;
+   float dx,dy,angle;
+   struct POINT temp;
+   for(i=0; i<num; i++)
+   {
+      dx = (float)p[i].x;
+      dy = (float)p[i].y;
+      if(dx>=0 && dy==0)
+         angle = 0;
+      else
+      {
+         angle = fabs(dy)/(fabs(dx) + fabs(dy));
+         if(dx<0 && dy>=0)
+            angle = 2 - angle;
+         else if(dx<=0 && dy<0)
+            angle = 2 + angle;
+         else if(dx>0 && dy<0)
+            angle = 4 - angle;
+      }
+      p[i].angle = angle;
+
+   }
+
+   for(i=0; i<num; i++)
+   {
+      for(j=0; j<num-1; j++)
+      {
+         if(p[j].angle > p[j+1].angle)
+         {
+            temp = p[j];
+            p[j] = p[j+1];
+            p[j+1] = temp;
+         }
+      }
+   }
+}
+
+void convexhull(int num)
+{
+   int i=0;
+   do{
+      p[i].next = calculate(i,num);
+      i++;
+   }while(p[i-1].next!=0);
+}
+
+int calculate(int now,int num)
+{
+   int i,next;
+   float dx,dy,angle,min=100;
+   if(now==num-1)
+      next = 0;
+   else
+   {
+      for(i=now+1; i<num; i++)
+      {
+         dx = p[i].x - p[now].x;
+         dy = p[i].y - p[now].y;
+         if(dx >=0 && dy==0)
+            angle = 0;
+         else
+         {
+            angle = fabs(dy) / (fabs(dx) + fabs(dy));
+            if(dx<0 && dy>=0)
+               angle = 2 - angle;
+            else if(dx<=0 && dy<0)
+               angle = 2 + angle;
+            else if(dx>0 && dy<0)
+               angle = 4 - angle;
+         }
+         if(angle<min)
+         {
+            min = angle;
+            next = i;
+         }
+      }
+   }
+   return next;
+}*/
